@@ -18,21 +18,22 @@ option(JUCE_ENABLE_MODULE_SOURCE_GROUPS "Show all module sources in IDE projects
 add_subdirectory(JUCE)
 
 juce_add_plugin("${PROJECT_NAME}"
-    # VERSION ...                               # Set this if the plugin version is different to the project version
-    # ICON_BIG ...                              # ICON_* arguments specify a path to an image file to use as an icon for the Standalone
+    # VERSION ...
+    # ICON_BIG ...
     # ICON_SMALL ...
     COMPANY_NAME acanois
     BUNDLE_ID com.acanois.acanois
-    IS_SYNTH FALSE                               # Is this a synth or an effect?
-    NEEDS_MIDI_INPUT FALSE                       # Does the plugin need midi input?
-    # NEEDS_MIDI_OUTPUT TRUE/FALSE              # Does the plugin need midi output?
-    # IS_MIDI_EFFECT TRUE/FALSE                 # Is this plugin a MIDI effect?
-    # EDITOR_WANTS_KEYBOARD_FOCUS TRUE/FALSE    # Does the editor need keyboard focus?
-    COPY_PLUGIN_AFTER_BUILD TRUE # On MacOS, plugin will be copied to /Users/you/Library/Audio/Plug-Ins/
-    PLUGIN_MANUFACTURER_CODE Acan               # This has to be one uppercase, rest lower for AU formats
-    PLUGIN_CODE P001                            # A unique four-character plugin id with at least one upper-case character
+    IS_SYNTH FALSE
+    NEEDS_MIDI_INPUT FALSE
+    # NEEDS_MIDI_OUTPUT TRUE/FALSE
+    # IS_MIDI_EFFECT TRUE/FALSE
+    # EDITOR_WANTS_KEYBOARD_FOCUS TRUE/FALSE
+    COPY_PLUGIN_AFTER_BUILD TRUE
+    PLUGIN_MANUFACTURER_CODE Acan
+    PLUGIN_CODE P001
     FORMATS "${FORMATS}"
-    PRODUCT_NAME "${PROJECT_NAME}")             # The name of the final executable, which can differ from the target name
+    PRODUCT_NAME "${PROJECT_NAME}"
+)
 
 target_compile_features("${PROJECT_NAME}" PRIVATE cxx_std_20)
 
@@ -40,7 +41,9 @@ set(SourceFiles
     Source/GiygasEditor.h
     Source/GiygasProcessor.h
     Source/GiygasEditor.cpp
-    Source/GiygasProcessor.cpp)
+    Source/GiygasProcessor.cpp
+    Source/CustomOscillator.h
+)
 target_sources("${PROJECT_NAME}" PRIVATE ${SourceFiles})
 
 set_target_properties("${PROJECT_NAME}" PROPERTIES FOLDER "")
@@ -69,7 +72,9 @@ target_link_libraries("${PROJECT_NAME}"
     juce::juce_audio_processors
     juce::juce_recommended_config_flags
     juce::juce_recommended_lto_flags
-    juce::juce_recommended_warning_flags)
+    juce::juce_recommended_warning_flags
+    juce::juce_dsp
+)
 
 #if(WIN32)
 #    find_package(IPP)
