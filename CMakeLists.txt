@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.31)
 
-set(PROJECT_NAME "JuceTemplate")
+set(PROJECT_NAME "Giygas")
 set(FORMATS AU Standalone)
 
 file(STRINGS VERSION CURRENT_VERSION)
@@ -37,10 +37,10 @@ juce_add_plugin("${PROJECT_NAME}"
 target_compile_features("${PROJECT_NAME}" PRIVATE cxx_std_20)
 
 set(SourceFiles
-    Source/PluginEditor.h
-    Source/PluginProcessor.h
-    Source/PluginEditor.cpp
-    Source/PluginProcessor.cpp)
+    Source/GiygasEditor.h
+    Source/GiygasProcessor.h
+    Source/GiygasEditor.cpp
+    Source/GiygasProcessor.cpp)
 target_sources("${PROJECT_NAME}" PRIVATE ${SourceFiles})
 
 set_target_properties("${PROJECT_NAME}" PROPERTIES FOLDER "")

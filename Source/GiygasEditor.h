@@ -4,15 +4,15 @@
 
 #pragma once
 
-#include "PluginProcessor.h"
+#include "GiygasProcessor.h"
 
 
 
-class PluginEditor : public juce::AudioProcessorEditor
+class GiygasEditor : public juce::AudioProcessorEditor
 {
 public:
-    explicit PluginEditor (PluginProcessor&);
-    ~PluginEditor() override;
+    explicit GiygasEditor (GiygasProcessor&);
+    ~GiygasEditor() override;
 
     //==============================================================================
     void paint (juce::Graphics&) override;
@@ -21,7 +21,7 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    PluginProcessor& processorRef;
+    GiygasProcessor& processorRef;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GiygasEditor)
 };

@@ -2,9 +2,9 @@
 // Created by David Richter on 12/31/24.
 //
 
-#include "PluginEditor.h"
+#include "GiygasEditor.h"
 
-PluginEditor::PluginEditor (PluginProcessor& p)
+GiygasEditor::GiygasEditor (GiygasProcessor& p)
     : AudioProcessorEditor (&p), processorRef (p)
 {
     juce::ignoreUnused (processorRef);
@@ -12,14 +12,14 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     setSize (400, 300);
 }
 
-PluginEditor::~PluginEditor() = default;
+GiygasEditor::~GiygasEditor() = default;
 
-void PluginEditor::paint (juce::Graphics& g)
+void GiygasEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
-void PluginEditor::resized()
+void GiygasEditor::resized()
 {
 }

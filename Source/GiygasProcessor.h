@@ -10,11 +10,11 @@
 #include "ipps.h"
 #endif
 
-class PluginProcessor : public juce::AudioProcessor
+class GiygasProcessor : public juce::AudioProcessor
 {
 public:
-    PluginProcessor();
-    ~PluginProcessor() override;
+    GiygasProcessor();
+    ~GiygasProcessor() override;
 
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -43,6 +43,6 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GiygasProcessor)
 };
 
