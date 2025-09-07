@@ -4,22 +4,33 @@
 
 #include "GiygasEditor.h"
 
-GiygasEditor::GiygasEditor (GiygasProcessor& p)
-    : AudioProcessorEditor (&p), processorRef (p)
-{
-    juce::ignoreUnused (processorRef);
+GiygasEditor::GiygasEditor(GiygasProcessor& p)
+    : AudioProcessorEditor(&p),
+      processorRef(p),
+      midiKeyboardComponent(
+          midiKeyboardState,
+          juce::MidiKeyboardComponent::horizontalKeyboard
+      ) {
+    juce::ignoreUnused(processorRef);
 
-    setSize (400, 300);
+    addAndMakeVisible(midiKeyboardComponent);
+
+    midiKeyboardState.addListener(&processorRef.getMidiMessageCollector());
+
+    setSize(640, 360);
 }
 
-GiygasEditor::~GiygasEditor() = default;
+GiygasEditor::~GiygasEditor() {
+    midiKeyboardState.removeListener(&processorRef.getMidiMessageCollector());
+}
 
-void GiygasEditor::paint (juce::Graphics& g)
-{
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
+void GiygasEditor::paint(juce::Graphics& g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
-void GiygasEditor::resized()
-{
+void GiygasEditor::resized() {
+    auto area = getLocalBounds();
+    juce::Rectangle<int> componentBounds;
+    componentBounds.setBounds(100, 100, 100, 100);
+    midiKeyboardComponent.setBounds(area.removeFromBottom(80).reduced(8));
 }

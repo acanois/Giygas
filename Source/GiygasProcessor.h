@@ -5,6 +5,8 @@
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_audio_basics/juce_audio_basics.h>
+#include <juce_audio_devices/juce_audio_devices.h>
 
 #include "CustomOscillator.h"
 
@@ -44,7 +46,12 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    //====================================================================
+    juce::MidiMessageCollector& getMidiMessageCollector() noexcept { return midiMessageCollector; }
+
 private:
+    juce::MidiMessageCollector midiMessageCollector;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GiygasProcessor)
 };
 
