@@ -8,43 +8,53 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_audio_devices/juce_audio_devices.h>
 
-#include "CustomOscillator.h"
+#include "SynthVoice.h"
 
 #if (MSVC)
 #include "ipps.h"
 #endif
 
-class GiygasProcessor : public juce::AudioProcessor
-{
+class GiygasProcessor : public juce::AudioProcessor {
 public:
     GiygasProcessor();
+
     ~GiygasProcessor() override;
 
-    void prepareToPlay (double sampleRate, int samplesPerBlock) override;
+    void prepareToPlay(double sampleRate, int samplesPerBlock) override;
+
     void releaseResources() override;
 
-    bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
+    bool isBusesLayoutSupported(const BusesLayout& layouts) const override;
 
-    void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+    void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
-    juce::AudioProcessorEditor* createEditor() override;
+    juce::AudioProcessorEditor *createEditor() override;
+
     bool hasEditor() const override;
 
     const juce::String getName() const override;
 
     bool acceptsMidi() const override;
+
     bool producesMidi() const override;
+
     bool isMidiEffect() const override;
+
     double getTailLengthSeconds() const override;
 
     int getNumPrograms() override;
-    int getCurrentProgram() override;
-    void setCurrentProgram (int index) override;
-    const juce::String getProgramName (int index) override;
-    void changeProgramName (int index, const juce::String& newName) override;
 
-    void getStateInformation (juce::MemoryBlock& destData) override;
-    void setStateInformation (const void* data, int sizeInBytes) override;
+    int getCurrentProgram() override;
+
+    void setCurrentProgram(int index) override;
+
+    const juce::String getProgramName(int index) override;
+
+    void changeProgramName(int index, const juce::String& newName) override;
+
+    void getStateInformation(juce::MemoryBlock& destData) override;
+
+    void setStateInformation(const void* data, int sizeInBytes) override;
 
     //====================================================================
     juce::MidiMessageCollector& getMidiMessageCollector() noexcept { return midiMessageCollector; }
@@ -52,6 +62,12 @@ public:
 private:
     juce::MidiMessageCollector midiMessageCollector;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GiygasProcessor)
-};
+    juce::dsp::ProcessSpec processSpec;
 
+    juce::Synthesiser synthesiser;
+
+    SynthSound* synthSound;
+    SynthVoice* synthVoice;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GiygasProcessor)
+};

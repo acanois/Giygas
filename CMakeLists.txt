@@ -43,6 +43,9 @@ set(SourceFiles
     Source/GiygasEditor.cpp
     Source/GiygasProcessor.cpp
     Source/CustomOscillator.h
+    Source/SynthSound.h
+    Source/SynthVoice.h
+    Source/SynthVoice.cpp
 )
 target_sources("${PROJECT_NAME}" PRIVATE ${SourceFiles})
 
