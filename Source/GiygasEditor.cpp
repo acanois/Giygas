@@ -10,7 +10,8 @@ GiygasEditor::GiygasEditor(GiygasProcessor& p)
       midiKeyboardComponent(
           midiKeyboardState,
           juce::MidiKeyboardComponent::horizontalKeyboard
-      ) {
+      )
+{
     juce::ignoreUnused(processorRef);
 
     addAndMakeVisible(midiKeyboardComponent);
@@ -20,15 +21,18 @@ GiygasEditor::GiygasEditor(GiygasProcessor& p)
     setSize(640, 360);
 }
 
-GiygasEditor::~GiygasEditor() {
+GiygasEditor::~GiygasEditor()
+{
     midiKeyboardState.removeListener(&processorRef.getMidiMessageCollector());
 }
 
-void GiygasEditor::paint(juce::Graphics& g) {
+void GiygasEditor::paint(juce::Graphics& g)
+{
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
-void GiygasEditor::resized() {
+void GiygasEditor::resized()
+{
     auto area = getLocalBounds();
     juce::Rectangle<int> componentBounds;
     componentBounds.setBounds(100, 100, 100, 100);

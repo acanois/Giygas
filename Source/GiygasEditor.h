@@ -8,7 +8,8 @@
 #include "juce_audio_utils/juce_audio_utils.h"
 
 
-class GiygasEditor : public juce::AudioProcessorEditor {
+class GiygasEditor : public juce::AudioProcessorEditor
+{
 public:
     explicit GiygasEditor(GiygasProcessor&);
 

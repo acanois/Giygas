@@ -9,11 +9,13 @@
 
 #include "juce_audio_basics/juce_audio_basics.h"
 
-class SynthVoice : public juce::SynthesiserVoice {
+class SynthVoice : public juce::SynthesiserVoice
+{
 public:
     SynthVoice();
 
-    bool canPlaySound(juce::SynthesiserSound* sound) override {
+    bool canPlaySound(juce::SynthesiserSound* sound) override
+    {
         return dynamic_cast<SynthSound *>(sound) != nullptr;
     }
 

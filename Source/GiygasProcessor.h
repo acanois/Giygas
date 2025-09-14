@@ -14,7 +14,9 @@
 #include "ipps.h"
 #endif
 
-class GiygasProcessor : public juce::AudioProcessor {
+class GiygasProcessor : public juce::AudioProcessor,
+                        public juce::AudioProcessorValueTreeState::Listener
+{
 public:
     GiygasProcessor();
 
@@ -57,7 +59,9 @@ public:
     void setStateInformation(const void* data, int sizeInBytes) override;
 
     //====================================================================
-    juce::MidiMessageCollector& getMidiMessageCollector() noexcept { return midiMessageCollector; }
+    juce::MidiMessageCollector& getMidiMessageCollector() { return midiMessageCollector; }
+
+    juce::AudioProcessorValueTreeState& getValueTree() { return valueTreeState; }
 
 private:
     juce::MidiMessageCollector midiMessageCollector;
@@ -68,6 +72,10 @@ private:
 
     SynthSound* synthSound;
     SynthVoice* synthVoice;
+
+    juce::AudioProcessorValueTreeState valueTreeState;
+
+    juce::Atomic<float> gain { 0.f };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GiygasProcessor)
 };

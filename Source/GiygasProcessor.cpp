@@ -17,8 +17,17 @@ GiygasProcessor::GiygasProcessor()
 #endif
           .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-      ), processSpec() {
-
+      ),
+      processSpec(),
+      valueTreeState(*this, nullptr, "ParameterState", {
+                         std::make_unique<juce::AudioParameterFloat>(
+                             juce::ParameterID { "gain", 1 },
+                             "Gain",
+                             juce::NormalisableRange<float>(0.f, 1.f, 0.001f),
+                             gain.get()
+                         )
+                     })
+{
     synthesiser.clearVoices();
     synthesiser.clearSounds();
 
@@ -28,16 +37,20 @@ GiygasProcessor::GiygasProcessor()
 
     synthesiser.addSound(synthSound);
     synthesiser.addVoice(synthVoice);
+
+    valueTreeState.addParameterListener("gain", this);
 }
 
 GiygasProcessor::~GiygasProcessor() = default;
 
 //==============================================================================
-const juce::String GiygasProcessor::getName() const {
+const juce::String GiygasProcessor::getName() const
+{
     return JucePlugin_Name;
 }
 
-bool GiygasProcessor::acceptsMidi() const {
+bool GiygasProcessor::acceptsMidi() const
+{
 #if JucePlugin_WantsMidiInput
     return true;
 #else
@@ -45,7 +58,8 @@ bool GiygasProcessor::acceptsMidi() const {
 #endif
 }
 
-bool GiygasProcessor::producesMidi() const {
+bool GiygasProcessor::producesMidi() const
+{
 #if JucePlugin_ProducesMidiOutput
     return true;
 #else
@@ -53,7 +67,8 @@ bool GiygasProcessor::producesMidi() const {
 #endif
 }
 
-bool GiygasProcessor::isMidiEffect() const {
+bool GiygasProcessor::isMidiEffect() const
+{
 #if JucePlugin_IsMidiEffect
     return true;
 #else
@@ -61,34 +76,41 @@ bool GiygasProcessor::isMidiEffect() const {
 #endif
 }
 
-double GiygasProcessor::getTailLengthSeconds() const {
+double GiygasProcessor::getTailLengthSeconds() const
+{
     return 0.0;
 }
 
-int GiygasProcessor::getNumPrograms() {
+int GiygasProcessor::getNumPrograms()
+{
     return 1; // NB: some hosts don't cope very well if you tell them there are 0 programs,
     // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int GiygasProcessor::getCurrentProgram() {
+int GiygasProcessor::getCurrentProgram()
+{
     return 0;
 }
 
-void GiygasProcessor::setCurrentProgram(int index) {
+void GiygasProcessor::setCurrentProgram(int index)
+{
     juce::ignoreUnused(index);
 }
 
-const juce::String GiygasProcessor::getProgramName(int index) {
+const juce::String GiygasProcessor::getProgramName(int index)
+{
     juce::ignoreUnused(index);
     return {};
 }
 
-void GiygasProcessor::changeProgramName(int index, const juce::String& newName) {
+void GiygasProcessor::changeProgramName(int index, const juce::String& newName)
+{
     juce::ignoreUnused(index, newName);
 }
 
 //==============================================================================
-void GiygasProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
+void GiygasProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+{
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     juce::ignoreUnused(sampleRate, samplesPerBlock);
@@ -102,18 +124,20 @@ void GiygasProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
     synthesiser.setCurrentPlaybackSampleRate(sampleRate);
 
     for (auto i = 0; i < synthesiser.getNumVoices(); ++i) {
-        if (auto* voice = dynamic_cast<SynthVoice*>(synthesiser.getVoice(i))) {
+        if (auto* voice = dynamic_cast<SynthVoice *>(synthesiser.getVoice(i))) {
             voice->prepareVoice(processSpec);
         }
     }
 }
 
-void GiygasProcessor::releaseResources() {
+void GiygasProcessor::releaseResources()
+{
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
-bool GiygasProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const {
+bool GiygasProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const
+{
 #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
     return true;
@@ -135,7 +159,8 @@ bool GiygasProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const {
 }
 
 void GiygasProcessor::processBlock(juce::AudioBuffer<float>& buffer,
-                                   juce::MidiBuffer& midiMessages) {
+                                   juce::MidiBuffer& midiMessages)
+{
     juce::ignoreUnused(midiMessages);
 
     juce::ScopedNoDenormals noDenormals;
@@ -153,23 +178,27 @@ void GiygasProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 }
 
 //==============================================================================
-bool GiygasProcessor::hasEditor() const {
+bool GiygasProcessor::hasEditor() const
+{
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor *GiygasProcessor::createEditor() {
+juce::AudioProcessorEditor *GiygasProcessor::createEditor()
+{
     return new GiygasEditor(*this);
 }
 
 //==============================================================================
-void GiygasProcessor::getStateInformation(juce::MemoryBlock& destData) {
+void GiygasProcessor::getStateInformation(juce::MemoryBlock& destData)
+{
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
     juce::ignoreUnused(destData);
 }
 
-void GiygasProcessor::setStateInformation(const void* data, int sizeInBytes) {
+void GiygasProcessor::setStateInformation(const void* data, int sizeInBytes)
+{
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
     juce::ignoreUnused(data, sizeInBytes);
@@ -177,6 +206,7 @@ void GiygasProcessor::setStateInformation(const void* data, int sizeInBytes) {
 
 //==============================================================================
 // This creates new instances of the plugin..
-juce::AudioProcessor * JUCE_CALLTYPE createPluginFilter() {
+juce::AudioProcessor * JUCE_CALLTYPE createPluginFilter()
+{
     return new GiygasProcessor();
 }

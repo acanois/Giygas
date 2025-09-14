@@ -6,39 +6,47 @@
 
 #include <juce_dsp/juce_dsp.h>
 
-class CustomOscillator {
+class CustomOscillator
+{
 public:
-    CustomOscillator() {
+    CustomOscillator()
+    {
         auto& osc = processorChain.get<oscIndex>();
         osc.initialise([](const float x) { return std::sin(x); }, 128);
     }
 
-    void prepare(juce::dsp::ProcessSpec& spec) {
+    void prepare(juce::dsp::ProcessSpec& spec)
+    {
         processorChain.prepare(spec);
     }
 
-    void reset() noexcept {
+    void reset() noexcept
+    {
         processorChain.reset();
     }
 
-    void setFrequency(const float frequency) {
+    void setFrequency(const float frequency)
+    {
         auto& osc = processorChain.get<oscIndex>();
         osc.setFrequency(frequency);
     }
 
-    void setGain(const float newGain) {
+    void setGain(const float newGain)
+    {
         auto& gain = processorChain.get<gainIndex>();
         gain.setGainLinear(newGain);
     }
 
     template<typename ProcessContext>
-    void process(const ProcessContext& context) noexcept {
+    void process(const ProcessContext& context) noexcept
+    {
         processorChain.process(context);
     }
 
 private:
     // Processor chain and index enum
-    enum {
+    enum
+    {
         oscIndex,
         gainIndex
     };

@@ -7,13 +7,16 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 
 
-class SynthSound : public juce::SynthesiserSound {
+class SynthSound : public juce::SynthesiserSound
+{
 public:
-    bool appliesToNote(int midiNoteNumber) override {
+    bool appliesToNote(int midiNoteNumber) override
+    {
         return true;
     }
 
-    bool appliesToChannel(int midiNoteNumber) override {
+    bool appliesToChannel(int midiNoteNumber) override
+    {
         return true;
     }
 };
