@@ -31,10 +31,16 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
     oscillator->setFrequency(220.f);
     oscillator->setGain(0.75f);
 
-    juce::dsp::AudioBlock<float> block { outputBuffer };
-    auto processBlock = juce::dsp::ProcessContextReplacing<float> (block);
+    juce::AudioBuffer<float> tempBuffer(outputBuffer);
+    tempBuffer.clear();
 
-    oscillator->process(processBlock);
+    juce::dsp::AudioBlock<float> block { tempBuffer };
+
+    oscillator->process(juce::dsp::ProcessContextReplacing(block));
+
+    for (auto channel = 0; channel < outputBuffer.getNumChannels(); ++channel) {
+        outputBuffer.addFrom(channel, startSample, tempBuffer, channel, startSample, numSamples);
+    }
 }
 
 void SynthVoice::pitchWheelMoved(int newPitchWheelValue) {
