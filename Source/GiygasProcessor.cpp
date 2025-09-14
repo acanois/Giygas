@@ -17,7 +17,7 @@ GiygasProcessor::GiygasProcessor()
 #endif
           .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-      ), processSpec({ 44100, 512, 2 }) {
+      ), processSpec() {
 
     synthesiser.clearVoices();
     synthesiser.clearSounds();
@@ -27,7 +27,7 @@ GiygasProcessor::GiygasProcessor()
     synthVoice = new SynthVoice();
 
     synthesiser.addSound(synthSound);
-    synthesiser.addVoice(synthVoice)
+    synthesiser.addVoice(synthVoice);
 }
 
 GiygasProcessor::~GiygasProcessor() = default;
@@ -100,6 +100,12 @@ void GiygasProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
     midiMessageCollector.reset(sampleRate);
 
     synthesiser.setCurrentPlaybackSampleRate(sampleRate);
+
+    for (auto i = 0; i < synthesiser.getNumVoices(); ++i) {
+        if (auto* voice = dynamic_cast<SynthVoice*>(synthesiser.getVoice(i))) {
+            voice->prepareVoice(processSpec);
+        }
+    }
 }
 
 void GiygasProcessor::releaseResources() {
@@ -133,15 +139,17 @@ void GiygasProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     juce::ignoreUnused(midiMessages);
 
     juce::ScopedNoDenormals noDenormals;
+
     auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
+    auto bufferSize = buffer.getNumSamples();
 
-    midiMessageCollector.removeNextBlockOfMessages(midiMessages, buffer.getNumSamples());
+    midiMessageCollector.removeNextBlockOfMessages(midiMessages, bufferSize);
 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    // Process
+    synthesiser.renderNextBlock(buffer, midiMessages, 0, bufferSize);
 }
 
 //==============================================================================

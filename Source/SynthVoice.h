@@ -36,6 +36,4 @@ public:
 
 private:
     std::unique_ptr<CustomOscillator> oscillator = nullptr;
-
-    juce::dsp::AudioBlock<float> tempBlock;
 };
