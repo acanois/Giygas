@@ -5,13 +5,15 @@
 #pragma once
 
 #include "GiygasProcessor.h"
-#include "juce_audio_utils/juce_audio_utils.h"
+#include "EnvelopeGUI.h"
+
+#include <juce_audio_utils/juce_audio_utils.h>"
 
 
 class GiygasEditor : public juce::AudioProcessorEditor
 {
 public:
-    explicit GiygasEditor(GiygasProcessor&);
+    GiygasEditor(GiygasProcessor&);
 
     ~GiygasEditor() override;
 
@@ -26,6 +28,7 @@ private:
     juce::MidiKeyboardState midiKeyboardState;
     juce::MidiKeyboardComponent midiKeyboardComponent;
 
+    std::unique_ptr<EnvelopeGUI> envelopeGUI { nullptr };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GiygasEditor)
 };

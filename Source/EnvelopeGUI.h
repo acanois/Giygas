@@ -20,7 +20,8 @@ public:
         componentBounds.setBounds(0, 0, sliderBounds.getWidth() * 4, sliderBounds.getHeight());
 
         std::array<std::string, 4> paramNames = { "attack", "decay", "sustain", "release" };
-        for (auto paramName: paramNames) {
+        for (auto paramName: paramNames)
+        {
             auto* control = new juce::Slider(
                 juce::Slider::RotaryVerticalDrag,
                 juce::Slider::TextBoxBelow
@@ -42,7 +43,8 @@ public:
     {
         auto xPos = componentBounds.getX();
 
-        for (const auto slider: sliders) {
+        for (const auto slider: sliders)
+        {
             slider->setBounds(xPos, componentBounds.getY(), sliderBounds.getWidth(), sliderBounds.getHeight());
             xPos += (sliderBounds.getX() + sliderBounds.getWidth() + 10);
         }

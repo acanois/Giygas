@@ -12,7 +12,7 @@ public:
     CustomOscillator()
     {
         auto& osc = processorChain.get<oscIndex>();
-        osc.initialise([](const float x) { return std::sin(x); }, 128);
+        osc.initialise([] (const float x) { return std::sin(x); }, 128);
     }
 
     void prepare(juce::dsp::ProcessSpec& spec)

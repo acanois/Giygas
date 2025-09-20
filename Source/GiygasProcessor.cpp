@@ -123,8 +123,10 @@ void GiygasProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
     synthesiser.setCurrentPlaybackSampleRate(sampleRate);
 
-    for (auto i = 0; i < synthesiser.getNumVoices(); ++i) {
-        if (auto* voice = dynamic_cast<SynthVoice *>(synthesiser.getVoice(i))) {
+    for (auto i = 0; i < synthesiser.getNumVoices(); ++i)
+    {
+        if (auto* voice = dynamic_cast<SynthVoice *>(synthesiser.getVoice(i)))
+        {
             voice->prepareVoice(processSpec);
         }
     }
@@ -203,6 +205,12 @@ void GiygasProcessor::setStateInformation(const void* data, int sizeInBytes)
     // whose contents will have been created by the getStateInformation() call.
     juce::ignoreUnused(data, sizeInBytes);
 }
+
+void GiygasProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    // From AudioProcessorValueTreeState::Listener
+}
+
 
 //==============================================================================
 // This creates new instances of the plugin..

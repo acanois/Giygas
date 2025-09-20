@@ -58,6 +58,9 @@ public:
 
     void setStateInformation(const void* data, int sizeInBytes) override;
 
+    // Value Tree State Listener =========================================
+    void parameterChanged(const juce::String& parameterID, float newValue) override;
+
     //====================================================================
     juce::MidiMessageCollector& getMidiMessageCollector() { return midiMessageCollector; }
 

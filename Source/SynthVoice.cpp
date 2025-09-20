@@ -35,7 +35,8 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
                                  int startSample,
                                  int numSamples)
 {
-    if (isVoiceActive()) {
+    if (isVoiceActive())
+    {
         juce::AudioBuffer<float> tempBuffer(outputBuffer);
         tempBuffer.clear();
 
@@ -43,7 +44,8 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
 
         oscillator->process(juce::dsp::ProcessContextReplacing(block));
 
-        for (auto channel = 0; channel < outputBuffer.getNumChannels(); ++channel) {
+        for (auto channel = 0; channel < outputBuffer.getNumChannels(); ++channel)
+        {
             outputBuffer.addFrom(channel, startSample, tempBuffer, channel, startSample, numSamples);
         }
     }
