@@ -37,5 +37,8 @@ public:
     void controllerMoved(int controllerNumber, int newControllerValue) override;
 
 private:
+    juce::HeapBlock<char> heapBlock;
+    juce::dsp::AudioBlock<float> tempBlock;
+
     std::unique_ptr<CustomOscillator> oscillator = nullptr;
 };

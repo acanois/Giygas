@@ -11,8 +11,8 @@ SynthVoice::SynthVoice()
 }
 
 
-void SynthVoice::startNote(int midiNoteNumber,
-                           float velocity,
+void SynthVoice::startNote(const int midiNoteNumber,
+                           const float velocity,
                            juce::SynthesiserSound* sound,
                            int currentPitchWheelPosition)
 {
@@ -22,11 +22,13 @@ void SynthVoice::startNote(int midiNoteNumber,
 
 void SynthVoice::stopNote(float velocity, bool allowTailOff)
 {
+    clearCurrentNote();
 }
 
 
 void SynthVoice::prepareVoice(juce::dsp::ProcessSpec& spec)
 {
+    tempBlock = juce::dsp::AudioBlock<float>(heapBlock, spec.numChannels, spec.maximumBlockSize);
     oscillator->prepare(spec);
 }
 
@@ -37,17 +39,14 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
 {
     if (isVoiceActive())
     {
-        juce::AudioBuffer<float> tempBuffer(outputBuffer);
-        tempBuffer.clear();
+        auto output = tempBlock.getSubBlock(0, numSamples);
+        output.clear();
 
-        juce::dsp::AudioBlock<float> block { tempBuffer };
-
-        oscillator->process(juce::dsp::ProcessContextReplacing(block));
-
-        for (auto channel = 0; channel < outputBuffer.getNumChannels(); ++channel)
-        {
-            outputBuffer.addFrom(channel, startSample, tempBuffer, channel, startSample, numSamples);
-        }
+        juce::dsp::ProcessContextReplacing<float> context(output);
+        oscillator->process(context);
+        juce::dsp::AudioBlock<float>(outputBuffer)
+            .getSubBlock(startSample, numSamples)
+            .add(tempBlock);
     }
 }
 
