@@ -40,5 +40,8 @@ private:
     juce::HeapBlock<char> heapBlock;
     juce::dsp::AudioBlock<float> tempBlock;
 
-    std::unique_ptr<CustomOscillator> oscillator = nullptr;
+    juce::ADSR envelope;
+    juce::ADSR::Parameters envelopeParameters;
+
+    std::unique_ptr<CustomOscillator> oscillator { nullptr };
 };

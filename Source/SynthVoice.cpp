@@ -8,8 +8,11 @@
 SynthVoice::SynthVoice()
     : oscillator(std::make_unique<CustomOscillator>())
 {
+    envelopeParameters.attack = 0.01f;
+    envelopeParameters.decay = 0.1f;
+    envelopeParameters.sustain = 0.5f;
+    envelopeParameters.release = 0.5f;
 }
-
 
 void SynthVoice::startNote(const int midiNoteNumber,
                            const float velocity,
@@ -18,10 +21,12 @@ void SynthVoice::startNote(const int midiNoteNumber,
 {
     oscillator->setGain(1.f / velocity);
     oscillator->setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber));
+    envelope.noteOn();
 }
 
 void SynthVoice::stopNote(float velocity, bool allowTailOff)
 {
+    envelope.noteOff();
     clearCurrentNote();
 }
 
@@ -29,6 +34,8 @@ void SynthVoice::stopNote(float velocity, bool allowTailOff)
 void SynthVoice::prepareVoice(juce::dsp::ProcessSpec& spec)
 {
     tempBlock = juce::dsp::AudioBlock<float>(heapBlock, spec.numChannels, spec.maximumBlockSize);
+    envelope.setParameters(envelopeParameters);
+    envelope.setSampleRate(spec.sampleRate);
     oscillator->prepare(spec);
 }
 
@@ -37,7 +44,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
                                  int startSample,
                                  int numSamples)
 {
-    if (isVoiceActive())
+    if (envelope.isActive())
     {
         auto output = tempBlock.getSubBlock(0, numSamples);
         output.clear();
