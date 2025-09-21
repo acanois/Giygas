@@ -21,8 +21,7 @@ void SynthVoice::startNote(int midiNoteNumber,
 {
     oscillator->setGain(1.f / velocity);
     frequencyRamp.setCurrentAndTargetValue(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber));
-    // osc.setFrequency(frequencyRamp.getNextValue(), force);
-    oscillator->setFrequency(frequencyRamp.getNextValue());
+    oscillator->setFrequency(frequencyRamp.getNextValue(), true);
     envelope.noteOn();
 }
 
@@ -36,9 +35,12 @@ void SynthVoice::stopNote(float velocity, bool allowTailOff)
 void SynthVoice::prepareVoice(juce::dsp::ProcessSpec& spec)
 {
     tempBlock = juce::dsp::AudioBlock<float>(heapBlock, spec.numChannels, spec.maximumBlockSize);
+
     envelope.setParameters(envelopeParameters);
     envelope.setSampleRate(spec.sampleRate);
+
     frequencyRamp.reset(spec.sampleRate, 0.1);
+
     oscillator->prepare(spec);
 }
 
@@ -58,6 +60,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
             .getSubBlock(startSample, numSamples)
             .add(tempBlock);
 
+        // This will need a temp buffer
         envelope.applyEnvelopeToBuffer(outputBuffer, startSample, numSamples);
     }
 }
