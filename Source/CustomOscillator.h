@@ -25,13 +25,13 @@ public:
         processorChain.reset();
     }
 
-    void setFrequency(const float frequency)
+    void setFrequency(float frequency, bool force = false)
     {
         auto& osc = processorChain.get<oscIndex>();
-        osc.setFrequency(frequency);
+        osc.setFrequency(frequency, force);
     }
 
-    void setGain(const float newGain)
+    void setGain(float newGain)
     {
         auto& gain = processorChain.get<gainIndex>();
         gain.setGainLinear(newGain);

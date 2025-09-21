@@ -44,4 +44,6 @@ private:
     juce::ADSR::Parameters envelopeParameters;
 
     std::unique_ptr<CustomOscillator> oscillator { nullptr };
+
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> frequencyRamp;
 };

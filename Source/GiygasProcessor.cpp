@@ -28,6 +28,7 @@ GiygasProcessor::GiygasProcessor()
                          )
                      })
 {
+    synthesiser.setNoteStealingEnabled(true);
     synthesiser.clearVoices();
     synthesiser.clearSounds();
 

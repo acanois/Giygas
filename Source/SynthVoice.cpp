@@ -14,13 +14,15 @@ SynthVoice::SynthVoice()
     envelopeParameters.release = 0.5f;
 }
 
-void SynthVoice::startNote(const int midiNoteNumber,
-                           const float velocity,
+void SynthVoice::startNote(int midiNoteNumber,
+                           float velocity,
                            juce::SynthesiserSound* sound,
                            int currentPitchWheelPosition)
 {
     oscillator->setGain(1.f / velocity);
-    oscillator->setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber));
+    frequencyRamp.setCurrentAndTargetValue(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber));
+    // osc.setFrequency(frequencyRamp.getNextValue(), force);
+    oscillator->setFrequency(frequencyRamp.getNextValue());
     envelope.noteOn();
 }
 
@@ -36,6 +38,7 @@ void SynthVoice::prepareVoice(juce::dsp::ProcessSpec& spec)
     tempBlock = juce::dsp::AudioBlock<float>(heapBlock, spec.numChannels, spec.maximumBlockSize);
     envelope.setParameters(envelopeParameters);
     envelope.setSampleRate(spec.sampleRate);
+    frequencyRamp.reset(spec.sampleRate, 0.1);
     oscillator->prepare(spec);
 }
 
