@@ -20,8 +20,9 @@ void SynthVoice::startNote(int midiNoteNumber,
                            int currentPitchWheelPosition)
 {
     oscillator->setGain(1.f / velocity);
-    frequencyRamp.setCurrentAndTargetValue(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber));
-    oscillator->setFrequency(frequencyRamp.getNextValue(), true);
+    frequencyRamp.setCurrentAndTargetValue(
+        juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber)
+    );
     envelope.noteOn();
 }
 
@@ -40,6 +41,7 @@ void SynthVoice::prepareVoice(juce::dsp::ProcessSpec& spec)
     envelope.setSampleRate(spec.sampleRate);
 
     frequencyRamp.reset(spec.sampleRate, 0.1);
+    frequencyRamp.setCurrentAndTargetValue(440.0f);
 
     oscillator->prepare(spec);
 }
@@ -55,9 +57,12 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
         output.clear();
 
         juce::dsp::ProcessContextReplacing<float> context(output);
+
+        oscillator->setFrequency(frequencyRamp.getNextValue(), true);
         oscillator->process(context);
         juce::dsp::AudioBlock<float>(outputBuffer)
             .getSubBlock(startSample, numSamples)
+            .clear()
             .add(tempBlock);
 
         // This will need a temp buffer
