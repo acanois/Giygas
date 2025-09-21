@@ -54,6 +54,8 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer,
         juce::dsp::AudioBlock<float>(outputBuffer)
             .getSubBlock(startSample, numSamples)
             .add(tempBlock);
+
+        envelope.applyEnvelopeToBuffer(outputBuffer, startSample, numSamples);
     }
 }
 
