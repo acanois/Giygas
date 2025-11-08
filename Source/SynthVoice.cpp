@@ -6,7 +6,7 @@
 
 
 SynthVoice::SynthVoice()
-    : oscillator(std::make_unique<CustomOscillator>())
+    : tempBlock(), oscillator(std::make_unique<CustomOscillator>())
 {
     envelopeParameters.attack = 0.01f;
     envelopeParameters.decay = 0.1f;
@@ -35,7 +35,11 @@ void SynthVoice::stopNote(float velocity, bool allowTailOff)
 
 void SynthVoice::prepareVoice(juce::dsp::ProcessSpec& spec)
 {
-    tempBlock = juce::dsp::AudioBlock<float>(heapBlock, spec.numChannels, spec.maximumBlockSize);
+    tempBlock = juce::dsp::AudioBlock<float>(
+        heapBlock,
+        spec.numChannels,
+        spec.maximumBlockSize
+    );
 
     envelope.setParameters(envelopeParameters);
     envelope.setSampleRate(spec.sampleRate);
