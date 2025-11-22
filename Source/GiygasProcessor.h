@@ -7,7 +7,6 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_audio_devices/juce_audio_devices.h>
-#include <tracktion_core/tracktion_core.h>
 
 #include "SynthVoice.h"
 
@@ -72,8 +71,8 @@ private:
 
     juce::dsp::ProcessSpec processSpec;
 
+    // Synth stuff
     juce::Synthesiser synthesiser;
-
     SynthSound* synthSound;
     SynthVoice* synthVoice;
 
