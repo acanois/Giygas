@@ -4,6 +4,19 @@
 
 #include "SimpleSequencer.h"
 
+#include "juce_audio_plugin_client/juce_audio_plugin_client.h"
+
+SimpleSequencer::SimpleSequencer(juce::MidiInputCallback& targetSynth)
+    : synth(targetSynth)
+{
+}
+
+SimpleSequencer::~SimpleSequencer()
+{
+
+}
+
+
 void SimpleSequencer::startSequence(double bpm)
 {
     double subdivisions = 4.0; // 16ths
@@ -23,26 +36,25 @@ void SimpleSequencer::stopSequence()
 
 void SimpleSequencer::timerCallback()
 {
-    // Get the current note value
     int noteNumber = sequenceData[currentStep];
 
-    // Create the MIDI messages (Note Off for the previous step, Note On for the current)
-    // Send Note Off for the previously played note (if it wasn't a rest '0')
+    auto currentTime = juce::Time::getMillisecondCounterHiRes() * 0.001;
+
     if (currentStep > 0 && sequenceData[currentStep - 1] != 0)
     {
-        int prevNote = sequenceData[currentStep - 1];
-        auto offMessage = juce::MidiMessage::noteOff(1, prevNote); // Channel 1, Note
+        auto prevNote = sequenceData[currentStep - 1];
+        auto offMessage = juce::MidiMessage::noteOff(1, prevNote);
+        offMessage.setTimeStamp(currentTime);
         synth.handleIncomingMidiMessage(nullptr, offMessage);
     }
 
-    // Send Note On for the new note (if it's not a rest '0')
     if (noteNumber != 0)
     {
         // Channel 1, Note, Velocity 100
         auto onMessage = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8) 100);
+        onMessage.setTimeStamp(currentTime);
         synth.handleIncomingMidiMessage(nullptr, onMessage);
     }
 
-    // --- 3. Advance the step counter
     currentStep = (currentStep + 1) % sequenceData.size();
 }

@@ -7,7 +7,7 @@
 #include "GiygasProcessor.h"
 #include "EnvelopeGUI.h"
 
-#include <juce_audio_utils/juce_audio_utils.h>"
+#include <juce_audio_utils/juce_audio_utils.h>
 
 
 class GiygasEditor : public juce::AudioProcessorEditor

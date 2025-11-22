@@ -38,20 +38,32 @@ juce_add_plugin("${PROJECT_NAME}"
 target_compile_features("${PROJECT_NAME}" PRIVATE cxx_std_20)
 
 set(SourceFiles
-    Source/GiygasEditor.h
-    Source/GiygasProcessor.h
     Source/GiygasEditor.cpp
     Source/GiygasProcessor.cpp
+    Source/SynthVoice.cpp
+    Source/SimpleSequencer.cpp
+    # If your processor or editor had an Objective-C implementation:
+    # Source/MyObjectiveCFile.mm
+)
+
+# You may optionally define your headers separately for IDE grouping,
+# but the compiler generally finds them via target_include_directories.
+set(HeaderFiles
+    Source/GiygasEditor.h
+    Source/GiygasProcessor.h
     Source/CustomOscillator.h
     Source/SynthSound.h
     Source/SynthVoice.h
-    Source/SynthVoice.cpp
+    Source/SimpleSequencer.h
 )
+
+# Apply the sources to the target
 target_sources("${PROJECT_NAME}" PRIVATE ${SourceFiles})
 
 set_target_properties("${PROJECT_NAME}" PROPERTIES FOLDER "")
 
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/Source PREFIX "" FILES ${SourceFiles})
+# And group all the files for the IDE
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/Source PREFIX "" FILES ${SourceFiles} ${HeaderFiles})
 
 # Setup our binary data as a target
 #juce_add_binary_data(Assets SOURCES pamplejuce.png)
@@ -68,8 +80,6 @@ target_compile_definitions("${PROJECT_NAME}"
     JUCE_VST3_CAN_REPLACE_VST2=0)
 
 target_link_libraries("${PROJECT_NAME}"
-    PRIVATE
-    #    Assets
     PUBLIC
     juce::juce_audio_utils
     juce::juce_audio_processors
@@ -131,7 +141,7 @@ target_link_libraries("${PROJECT_NAME}"
 
 # Color our warnings and errors
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    add_compile_options (-fdiagnostics-color=always)
+    add_compile_options(-fdiagnostics-color=always)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    add_compile_options (-fcolor-diagnostics)
+    add_compile_options(-fcolor-diagnostics)
 endif ()

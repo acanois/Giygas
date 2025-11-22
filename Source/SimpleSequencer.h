@@ -7,9 +7,10 @@
 #include <juce_events/juce_events.h> // Timer
 #include <juce_audio_devices/juce_audio_devices.h> // Midi IO
 
-class SimpleSequencer : public juce::Timer {
+class SimpleSequencer : public juce::Timer
+{
 public:
-    SimpleSequencer(juce::MidiInputCallback& targetSynth);
+    explicit SimpleSequencer(juce::MidiInputCallback& targetSynth);
     ~SimpleSequencer() override;
 
     void startSequence(double bpm);

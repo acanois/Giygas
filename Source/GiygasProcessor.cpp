@@ -39,6 +39,9 @@ GiygasProcessor::GiygasProcessor()
     synthesiser.addSound(synthSound);
     synthesiser.addVoice(synthVoice);
 
+    sequencer = std::make_unique<SimpleSequencer>(*this);
+    sequencer->startSequence(120.0);
+
     valueTreeState.addParameterListener("gain", this);
 }
 
@@ -165,18 +168,18 @@ void GiygasProcessor::processBlock(juce::AudioBuffer<float>& buffer,
                                    juce::MidiBuffer& midiMessages)
 {
     juce::ignoreUnused(midiMessages);
-
     juce::ScopedNoDenormals noDenormals;
 
-    auto totalNumInputChannels = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
+    buffer.clear();
+
+    // auto totalNumInputChannels = getTotalNumInputChannels();
+    // auto totalNumOutputChannels = getTotalNumOutputChannels();
     auto bufferSize = buffer.getNumSamples();
 
+    // for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+    //     buffer.clear(i, 0, buffer.getNumSamples());
+
     midiMessageCollector.removeNextBlockOfMessages(midiMessages, bufferSize);
-
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear(i, 0, buffer.getNumSamples());
-
     synthesiser.renderNextBlock(buffer, midiMessages, 0, bufferSize);
 }
 
@@ -210,6 +213,13 @@ void GiygasProcessor::setStateInformation(const void* data, int sizeInBytes)
 void GiygasProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
     // From AudioProcessorValueTreeState::Listener
+}
+
+// For Simple Sequencer
+void GiygasProcessor::handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message)
+{
+    juce::ignoreUnused(source);
+    midiMessageCollector.addMessageToQueue(message);
 }
 
 

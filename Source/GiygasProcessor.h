@@ -8,14 +8,17 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_audio_devices/juce_audio_devices.h>
 
+#include "SimpleSequencer.h"
 #include "SynthVoice.h"
+
 
 #if (MSVC)
 #include "ipps.h"
 #endif
 
 class GiygasProcessor : public juce::AudioProcessor,
-                        public juce::AudioProcessorValueTreeState::Listener
+                        public juce::AudioProcessorValueTreeState::Listener,
+                        public juce::MidiInputCallback
 {
 public:
     GiygasProcessor();
@@ -67,6 +70,9 @@ public:
     juce::AudioProcessorValueTreeState& getValueTree() { return valueTreeState; }
 
 private:
+    void handleIncomingMidiMessage(juce::MidiInput* source,
+                                   const juce::MidiMessage& message) override;
+
     juce::MidiMessageCollector midiMessageCollector;
 
     juce::dsp::ProcessSpec processSpec;
@@ -75,6 +81,7 @@ private:
     juce::Synthesiser synthesiser;
     SynthSound* synthSound;
     SynthVoice* synthVoice;
+    std::unique_ptr<SimpleSequencer> sequencer { nullptr };
 
     juce::AudioProcessorValueTreeState valueTreeState;
 
