@@ -13,7 +13,6 @@ SimpleSequencer::SimpleSequencer(juce::MidiInputCallback& targetSynth)
 
 SimpleSequencer::~SimpleSequencer()
 {
-
 }
 
 
@@ -36,13 +35,13 @@ void SimpleSequencer::stopSequence()
 
 void SimpleSequencer::timerCallback()
 {
-    int noteNumber = sequenceData[currentStep];
+    int noteNumber = scaleDegrees[currentStep] + rootNote;
 
     auto currentTime = juce::Time::getMillisecondCounterHiRes() * 0.001;
 
-    if (currentStep > 0 && sequenceData[currentStep - 1] != 0)
+    if (currentStep > 0 && scaleDegrees[currentStep - 1] != 0)
     {
-        auto prevNote = sequenceData[currentStep - 1];
+        auto prevNote = scaleDegrees[currentStep - 1];
         auto offMessage = juce::MidiMessage::noteOff(1, prevNote);
         offMessage.setTimeStamp(currentTime);
         synth.handleIncomingMidiMessage(nullptr, offMessage);
@@ -50,11 +49,12 @@ void SimpleSequencer::timerCallback()
 
     if (noteNumber != 0)
     {
-        // Channel 1, Note, Velocity 100
-        auto onMessage = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8) 100);
+        auto onMessage = juce::MidiMessage::noteOn(midiChannel,
+                                                   noteNumber,
+                                                   (juce::uint8) velocity);
         onMessage.setTimeStamp(currentTime);
         synth.handleIncomingMidiMessage(nullptr, onMessage);
     }
 
-    currentStep = (currentStep + 1) % sequenceData.size();
+    currentStep = (currentStep + 1) % scaleDegrees.size();
 }
