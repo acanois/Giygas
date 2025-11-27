@@ -16,7 +16,7 @@ SimpleSequencer::~SimpleSequencer()
 }
 
 
-void SimpleSequencer::startSequence(double bpm)
+void SimpleSequencer::startSequence()
 {
     double subdivisions = 4.0; // 16ths
 

@@ -10,7 +10,8 @@
 #include <juce_audio_utils/juce_audio_utils.h>
 
 
-class GiygasEditor : public juce::AudioProcessorEditor
+class GiygasEditor : public juce::AudioProcessorEditor,
+                     public juce::Button::Listener
 {
 public:
     GiygasEditor(GiygasProcessor&);
@@ -22,6 +23,9 @@ public:
 
     void resized() override;
 
+    //==============================================================================
+    void buttonClicked(juce::Button* button) override;
+
 private:
     GiygasProcessor& processorRef;
 
@@ -29,6 +33,8 @@ private:
     juce::MidiKeyboardComponent midiKeyboardComponent;
 
     std::unique_ptr<EnvelopeGUI> envelopeGUI { nullptr };
+
+    juce::TextButton playButton { "Play" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GiygasEditor)
 };

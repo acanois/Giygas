@@ -14,9 +14,11 @@ public:
 
     ~SimpleSequencer() override;
 
-    void startSequence(double bpm);
+    void startSequence();
 
     void stopSequence();
+
+    void setBpm(double newBpm) { bpm = newBpm; }
 
 private:
     void timerCallback() override;
@@ -28,8 +30,10 @@ private:
         0, 1, 3, 5, 7, 8, 10, 12, 13, 15, 17, 19, 20, 22, 24
     };
 
+    double bpm { 93 };
+
     int midiChannel { 1 };
     int currentStep { 0 };
-    int rootNote { 42 };
+    int rootNote { 39 };
     int velocity { 100 };
 };

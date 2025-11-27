@@ -25,7 +25,7 @@ GiygasProcessor::GiygasProcessor()
                              "Gain",
                              juce::NormalisableRange<float>(0.f, 1.f, 0.001f),
                              gain.get()
-                         )
+                         ),
                      })
 {
     synthesiser.setNoteStealingEnabled(true);
@@ -40,7 +40,6 @@ GiygasProcessor::GiygasProcessor()
     synthesiser.addVoice(synthVoice);
 
     sequencer = std::make_unique<SimpleSequencer>(*this);
-    sequencer->startSequence(120.0);
 
     valueTreeState.addParameterListener("gain", this);
 }
@@ -215,11 +214,22 @@ void GiygasProcessor::parameterChanged(const juce::String& parameterID, float ne
     // From AudioProcessorValueTreeState::Listener
 }
 
-// For Simple Sequencer
+//==============================================================================
+// Sequencer Methods
 void GiygasProcessor::handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message)
 {
     juce::ignoreUnused(source);
     midiMessageCollector.addMessageToQueue(message);
+}
+
+void GiygasProcessor::playSequencer()
+{
+    sequencer->startSequence();
+}
+
+void GiygasProcessor::stopSequencer()
+{
+    sequencer->stopSequence();
 }
 
 

@@ -65,9 +65,15 @@ public:
     void parameterChanged(const juce::String& parameterID, float newValue) override;
 
     //====================================================================
+    void playSequencer();
+
+    void stopSequencer();
+
     juce::MidiMessageCollector& getMidiMessageCollector() { return midiMessageCollector; }
 
     juce::AudioProcessorValueTreeState& getValueTree() { return valueTreeState; }
+
+    SimpleSequencer* getSequencer() { return sequencer.get(); }
 
 private:
     void handleIncomingMidiMessage(juce::MidiInput* source,
@@ -81,11 +87,12 @@ private:
     juce::Synthesiser synthesiser;
     SynthSound* synthSound;
     SynthVoice* synthVoice;
+
     std::unique_ptr<SimpleSequencer> sequencer { nullptr };
 
     juce::AudioProcessorValueTreeState valueTreeState;
 
-    juce::Atomic<float> gain { 0.f };
+    juce::Atomic<float> gain { 0.0f };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GiygasProcessor)
 };

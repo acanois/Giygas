@@ -7,16 +7,16 @@
 GiygasEditor::GiygasEditor(GiygasProcessor& p)
     : AudioProcessorEditor(&p),
       processorRef(p),
-      midiKeyboardComponent(
-          midiKeyboardState,
-          juce::MidiKeyboardComponent::horizontalKeyboard
-      )
+      midiKeyboardComponent(midiKeyboardState,
+                            juce::MidiKeyboardComponent::horizontalKeyboard)
 {
     juce::ignoreUnused(processorRef);
 
     addAndMakeVisible(midiKeyboardComponent);
+    addAndMakeVisible(playButton);
 
     midiKeyboardState.addListener(&processorRef.getMidiMessageCollector());
+    playButton.addListener(this);
 
     setSize(640, 360);
 }
@@ -34,7 +34,29 @@ void GiygasEditor::paint(juce::Graphics& g)
 void GiygasEditor::resized()
 {
     auto area = getLocalBounds();
+
     juce::Rectangle<int> componentBounds;
     componentBounds.setBounds(100, 100, 100, 100);
+
     midiKeyboardComponent.setBounds(area.removeFromBottom(80).reduced(8));
+    playButton.setBounds(
+        componentBounds.removeFromBottom(
+            componentBounds.getCentreY()
+        ).withSizeKeepingCentre(50, 24)
+    );
 }
+
+void GiygasEditor::buttonClicked(juce::Button* button)
+{
+    if (button == &playButton)
+    {
+        if (auto* sequencer = processorRef.getSequencer())
+        {
+            if (sequencer->isTimerRunning())
+                sequencer->stopSequence();
+            else
+                sequencer->startSequence();
+        }
+    }
+}
+
