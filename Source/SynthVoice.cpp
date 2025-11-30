@@ -10,8 +10,8 @@ SynthVoice::SynthVoice()
 {
     envelopeParameters.attack = 0.01f;
     envelopeParameters.decay = 0.1f;
-    envelopeParameters.sustain = 0.5f;
-    envelopeParameters.release = 0.5f;
+    envelopeParameters.sustain = 0.0f;
+    envelopeParameters.release = 0.01f;
 }
 
 void SynthVoice::startNote(int midiNoteNumber,

@@ -30,12 +30,17 @@ void SimpleSequencer::startSequence()
 void SimpleSequencer::stopSequence()
 {
     stopTimer();
-    // Note off messages could be set here
+
+    auto currentTime = juce::Time::getMillisecondCounterHiRes() * 0.001;
+
+    auto offMessage = juce::MidiMessage::noteOff(1, currentStep);
+    offMessage.setTimeStamp(currentTime);
+    synth.handleIncomingMidiMessage(nullptr, offMessage);
 }
 
 void SimpleSequencer::timerCallback()
 {
-    int noteNumber = scaleDegrees[currentStep] + rootNote;
+    auto noteNumber = scaleDegrees[currentStep] + rootNote;
 
     auto currentTime = juce::Time::getMillisecondCounterHiRes() * 0.001;
 
